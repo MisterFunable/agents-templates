@@ -1,0 +1,75 @@
+Revision Example: "Winter Evening"
+====================================
+
+FIRST DRAFT (with problems marked)
+-----------------------------------
+
+The beautiful sunset was really amazing to see              [cliché, filler words]
+As the colors filled the evening sky                        [abstract "colors"]
+The cold winter wind was blowing through the trees          [telling, passive]
+And made a very sad and lonely sound                        [declaring emotion]
+I felt really sad as I walked alone                         [telling, filler]
+Down the path that we used to walk together                 [cliché phrase]
+Everything reminded me of you                               [too abstract]
+And I missed you so much it hurt                            [telling emotion directly]
+
+
+REVISED VERSION
+---------------
+
+Winter Evening
+
+Tangerine and copper streaked the clouds—
+dusk painting the sky in rust and flame.
+
+Wind through bare branches,
+that high whistle of winter
+threading through empty nests.
+
+I walked our path alone,
+your absence loud as the crack
+of ice beneath my boots.
+
+Your coffee cup still sits
+beside the door. I saw it there
+this morning. Set it back.
+
+---
+
+CHANGES MADE:
+
+Line 1-2:
+- Removed "beautiful" and "amazing" (show, don't tell)
+- Removed "really" (filler word)
+- Specific colors: tangerine, copper, rust, flame (concrete)
+- Stronger verb: "painting" vs. "filled"
+- Removed "to see" (implied)
+
+Line 3-5:
+- Changed "cold winter wind was blowing" to active "Wind through bare branches"
+- Concrete sound: "high whistle" vs. "sad and lonely sound"
+- "Threading through empty nests" (image vs. abstraction)
+- Removed "very" (filler)
+
+Line 6-8:
+- Kept "walked our path alone" but removed "used to walk together" (implied)
+- Added concrete detail: "crack of ice beneath my boots"
+- Made absence active: "your absence loud"
+
+Line 9-11:
+- Added new concrete detail: coffee cup
+- Shows grief through action (seeing cup, setting it back)
+- Removed direct statements of missing/hurting
+- Earned emotion through detail
+
+TECHNIQUES DEMONSTRATED:
+
+✓ Replaced clichés with fresh images
+✓ Removed filler words (really, very, so)
+✓ Concrete sensory details (tangerine, whistle, crack of ice)
+✓ Showed emotion through action and image
+✓ Active verbs (painting, threading, crack)
+✓ Line breaks for emphasis and breath
+✓ Specific over abstract (coffee cup, not "everything")
+✓ Trusted reader to feel emotion
+

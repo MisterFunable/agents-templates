@@ -1,0 +1,107 @@
+# Brewfile Example
+# This file specifies packages and applications to install via Homebrew
+# Usage: brew bundle install
+
+# Taps (third-party repositories)
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/cask-fonts"
+
+# CLI Tools - Essential
+brew "git"
+brew "curl"
+brew "wget"
+brew "tree"
+brew "jq"
+brew "yq"
+
+# CLI Tools - Developer
+brew "gh"              # GitHub CLI
+brew "tldr"            # Simplified man pages
+brew "bat"             # Better cat with syntax highlighting
+brew "ripgrep"         # Better grep
+brew "fd"              # Better find
+brew "exa"             # Better ls
+brew "fzf"             # Fuzzy finder
+brew "htop"            # Process monitor
+brew "ncdu"            # Disk usage analyzer
+
+# CLI Tools - DevOps
+brew "docker"
+brew "docker-compose"
+brew "kubernetes-cli"
+brew "helm"
+brew "terraform"
+brew "ansible"
+brew "awscli"
+brew "azure-cli"
+
+# CLI Tools - Creative
+brew "ffmpeg"          # Video/audio processing
+brew "imagemagick"     # Image processing
+brew "youtube-dl"      # Video downloader
+brew "exiftool"        # Metadata tool
+
+# Development Tools
+brew "asdf"            # Version manager
+brew "direnv"          # Environment switcher
+brew "tmux"            # Terminal multiplexer
+
+# Databases & Tools
+brew "postgresql"
+brew "redis"
+brew "sqlite"
+
+# GUI Applications - Development
+cask "visual-studio-code"
+cask "iterm2"
+cask "docker"
+cask "postman"
+cask "bruno"           # API client alternative
+cask "tableplus"       # Database GUI
+
+# GUI Applications - Browsers
+cask "google-chrome"
+cask "firefox"
+cask "arc"
+
+# GUI Applications - Productivity
+cask "rectangle"       # Window management
+cask "alfred"          # Spotlight replacement
+cask "notion"          # Note-taking
+cask "obsidian"        # Markdown notes
+cask "raycast"         # Productivity tool
+
+# GUI Applications - Communication
+cask "slack"
+cask "discord"
+cask "zoom"
+
+# GUI Applications - Creative
+cask "figma"
+cask "adobe-creative-cloud"
+cask "obs"             # Screen recording
+cask "vlc"             # Media player
+cask "handbrake"       # Video transcoding
+cask "blender"         # 3D modeling
+cask "kap"             # Screen recorder
+
+# GUI Applications - Utilities
+cask "the-unarchiver"  # Archive utility
+cask "appcleaner"      # Uninstaller
+cask "imageoptim"      # Image optimizer
+cask "hiddenbar"       # Menu bar organizer
+cask "flycut"          # Clipboard manager
+cask "karabiner-elements"  # Keyboard customizer
+
+# Fonts
+cask "font-meslo-lg-nerd-font"
+cask "font-fira-code-nerd-font"
+cask "font-jetbrains-mono-nerd-font"
+
+# Mac App Store (requires mas CLI)
+# brew "mas"
+# mas "Xcode", id: 497799835
+# mas "1Password", id: 1333542190
+# mas "Magnet", id: 441258766
+

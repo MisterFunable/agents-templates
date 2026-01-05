@@ -65,6 +65,96 @@ Notes:
 - **Observability**:
   - Extensions aren’t like backend services with built-in telemetry. Add structured logging (where possible) and define a support process (how users report issues, how you reproduce in a test base).
 
+### 5.1 Pipeline Demo (Makefile)
+
+This is a minimal “ship it” workflow you can drop into an extension repo (adjust scripts to match your tooling).
+
+```make
+.PHONY: help setup dev lint test build package release
+
+help:
+	@echo "make setup | dev | lint | test | build | package | release"
+
+setup:
+	# Recommended: pin Node in .nvmrc or .tool-versions
+	npm ci
+
+dev:
+	# Run the local dev server / Airtable dev flow (depends on your setup)
+	npm run dev
+
+lint:
+	npm run lint
+	npm run typecheck
+
+test:
+	npm test
+
+build:
+	npm run build
+
+package:
+	# Produce a distributable artifact for review/sharing
+	rm -rf dist-artifact
+	mkdir -p dist-artifact
+	cp -R dist/* dist-artifact/
+	(cd dist-artifact && zip -r ../extension-build.zip .)
+
+release:
+	@echo "Manual step: publish/upload the build in Airtable, or follow your org's release process"
+```
+
+Optional CI (GitHub Actions) to enforce quality gates:
+
+```yaml
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+```
+
+Optional CI (GitLab CI) to enforce quality gates:
+
+```yaml
+stages:
+  - test
+  - build
+
+default:
+  image: node:20
+
+lint_and_test:
+  stage: test
+  script:
+    - npm ci
+    - npm run lint
+    - npm run typecheck
+    - npm test
+
+build:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    when: always
+    paths:
+      - dist/
+```
+
 ### 6. Use Cases & Value
 
 | Use case | User | Value | Why now |

@@ -33,6 +33,14 @@ If you only create one file, name it `SUMMARY.md` and include both the technical
 - Use `##` headings for major sections only.
 - Use tables for comparisons, limits, trade-offs, and decisions.
 - Keep paragraphs short (2-4 lines). Prefer bullets.
+### Delivery pipeline requirement (when the feature ships code)
+
+If adopting this technology requires writing and shipping code (extension, plugin, service, IaC, scripts), you MUST include a **Pipeline Demo**:
+
+- Either a minimal **Makefile** with the key steps to build/test/package/release
+- Or a minimal **CI workflow snippet** (GitHub Actions/GitLab CI/Circle) showing the same steps
+
+Goal: a reader should be able to run the PoC and understand how changes move to production.
 
 ## Technology Research Template (Fill This In)
 
@@ -88,6 +96,87 @@ Cover what teams forget:
 - **Security**: authn/authz model, least privilege, data boundaries, audit.
 - **Compliance**: PII, retention, regional data, vendor risk.
 - **Observability**: logs, metrics, traces, alerting, SLOs.
+
+### 5.1 Pipeline Demo (required if shipping code)
+
+Include one of the following.
+
+#### Option A: Makefile (preferred for quick PoCs)
+
+```make
+.PHONY: setup lint test build package release
+
+setup:
+	# install deps, pin versions
+
+lint:
+	# fast checks (format, lint, typecheck)
+
+test:
+	# unit + lightweight integration tests
+
+build:
+	# production build artifacts
+
+package:
+	# create distributable (zip, image, plugin bundle)
+
+release:
+	# publish step (upload artifact, tag, deploy)
+```
+
+#### Option B: CI snippet (GitHub Actions example)
+
+```yaml
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+```
+
+#### Option C: CI snippet (GitLab CI example)
+
+```yaml
+stages:
+  - test
+  - build
+
+default:
+  image: node:20
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+
+lint_and_test:
+  stage: test
+  script:
+    - npm ci
+    - npm run lint
+    - npm test
+
+build:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  artifacts:
+    when: always
+    paths:
+      - dist/
+```
 
 ### 6. Use Cases & Value
 
@@ -237,6 +326,8 @@ If we need 10k+ writes/day -> test quotas + batching strategy
 |--------|----------|
 | Output files | `SUMMARY.md`, `TECHNICAL_EVALUATION.md`, `BUSINESS_REVIEW.md`, `DECISION_LOG.md`, `REFERENCES.md` |
 | Required sections | Overview, Availability, Pricing, Technical Impact, Implementation Needs, Use Cases, Risks, Alternatives, Business Impact, Recommendation, References |
+| Pipeline demo | Required if shipping code: Makefile or CI snippet with build/test/package/release |
+| Pipeline demo | Required if shipping code: Makefile or CI snippet with build/test/package/release |
 | Evidence standard | Official docs first; call out unknowns and plan gates; quantify limits |
 | Recommendation format | Adopt / No / Pilot + success criteria + exit criteria |
 | Writing style | Tables and bullets; short paragraphs; two-audience split |

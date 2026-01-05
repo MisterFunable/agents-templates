@@ -1,0 +1,91 @@
+# Directory to install
+cask_args appdir: '/Applications'
+
+# Taps
+tap 'aws/tap'
+tap 'warrensbox/tap'
+tap 'weaveworks/tap'
+
+# Core utilities
+brew 'zsh'
+brew 'git'
+brew 'fzf'
+cask 'rar'
+brew 'p7zip'
+brew 'wget'
+brew 'curl'
+brew 'gpg'
+brew 'coreutils'
+brew 'telnet'
+
+# Troubleshooting tools
+brew 'htop'
+brew 'watch'
+
+# Development tools
+brew 'asdf' # Version manager for multiple languages
+brew 'pipx' # Python application installer
+brew 'jq'   # JSON processor
+cask 'visual-studio-code'
+cask 'sublime-text'
+cask 'arduino'
+
+# Quality of life applications
+cask 'vlc'
+cask 'folx'
+cask 'rectangle' # Window management
+cask 'shottr'    # Screenshot tool
+cask 'clipy'     # Clipboard manager
+cask 'quitter'   # Automatically hides or quits inactive apps
+cask 'monitorcontrol' # Control external monitors
+cask 'obsidian'  # Note-taking application
+
+# Virtualization tools
+cask 'docker'
+brew 'minikube' # Local Kubernetes cluster
+
+# Infrastructure tools
+brew 'awscli'
+brew 'kubectl'
+brew 'aws-sam-cli'
+brew 'kubectx'
+brew 'tfswitch' # Terraform version manager
+brew 'eksctl'
+brew 'helm'
+brew 'velero'
+brew 'cookiecutter' # Project templating
+# cask 'microsoft-office'
+cask 'microsoft-remote-desktop'
+cask 'postman' # API development
+
+# Lints and documentation tools
+brew 'automake'
+brew 'tfsec' # Terraform security scanner
+brew 'terraform-docs' # Generates documentation from Terraform modules
+
+# Communication packages
+cask 'microsoft-teams'
+cask 'meetingbar' # Integrates your calendar into your macOS menu bar
+
+# Memes
+
+# fcask 'capcut'
+brew 'exiftool' # Check Video Metadata
+
+
+# Uncomment below for specific use cases or additional tools
+# brew 'direnv'
+# brew 'git-crypt'
+# brew 'subversion'
+# cask 'send-to-kindle'
+# cask 'google-chrome'
+# cask 'iterm2'
+# cask 'vagrant'
+# cask 'virtualbox'
+# cask 'cyberduck'
+# brew 'youtube-dl'
+# brew 'ffmpeg'
+# brew 'speedtest-cli'
+# brew 'httrack'
+# brew 'httpie'
+# brew 'siege'

@@ -24,6 +24,7 @@ Drop these files into your repository to guide AI models on coding style, README
 | `AGENTS_CLI.md` | Command-line tool patterns and documentation |
 | `AGENTS_WEBAPP.md` | Web application structure and frontend conventions |
 | `AGENTS_POETRY.md` | Poetry writing techniques, forms, and revision guidelines |
+| `AGENTS_TECH_RESEARCH.md` | Technology research and evaluation for engineering + business stakeholders |
 | `AGENTS_TEMPLATE.md` | Meta-template for creating new AGENTS.md files |
 
 ## Usage
@@ -58,12 +59,14 @@ agents-templates/
 ├── AGENTS_CLI.md             # CLI tool patterns
 ├── AGENTS_WEBAPP.md          # Web app conventions
 ├── AGENTS_TEMPLATE.md        # Template for creating templates
+├── AGENTS_TECH_RESEARCH.md   # Tech research + evaluation template
 │
 └── examples/                 # Reference implementations
     ├── readme-sample/        # Before/after README examples
     ├── python-sample/        # Python script example
     ├── cli-sample/           # CLI tool example
     ├── poetry-sample/        # Poetry examples (sonnet, haiku, free verse)
+    ├── tech-research-sample/ # Example evaluation writeups
     └── template-creation-sample/  # How to use AGENTS_TEMPLATE.md
 ```
 

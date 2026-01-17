@@ -599,6 +599,273 @@ function UserContent({ html }: { html: string }) {
 <img src={user.avatar} alt={`${user.name}'s profile picture`} />
 ```
 
+## SEO and Meta Tags
+
+**Configure meta tags in Next.js:**
+
+```tsx
+// app/layout.tsx
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: {
+    default: 'My App',
+    template: '%s | My App',
+  },
+  description: 'App description for search engines',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://myapp.com',
+    siteName: 'My App',
+  },
+};
+```
+
+**Dynamic meta tags per page:**
+
+```tsx
+// app/blog/[slug]/page.tsx
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const post = await getPost(params.slug);
+  return {
+    title: post.title,
+    description: post.excerpt,
+    openGraph: {
+      images: [post.coverImage],
+    },
+  };
+}
+```
+
+**Structured data (JSON-LD):**
+
+```tsx
+export default function ProductPage({ product }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.description,
+    offers: {
+      '@type': 'Offer',
+      price: product.price,
+      priceCurrency: 'USD',
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      {/* Page content */}
+    </>
+  );
+}
+```
+
+## Internationalization (i18n)
+
+**Setup with next-intl:**
+
+```tsx
+// middleware.ts
+import createMiddleware from 'next-intl/middleware';
+
+export default createMiddleware({
+  locales: ['en', 'es', 'fr'],
+  defaultLocale: 'en',
+});
+
+export const config = {
+  matcher: ['/((?!api|_next|.*\\..*).*)'],
+};
+```
+
+**Translation files:**
+
+```json
+// messages/en.json
+{
+  "common": {
+    "welcome": "Welcome, {name}!",
+    "items": "{count, plural, =0 {No items} one {# item} other {# items}}"
+  }
+}
+```
+
+**Using translations:**
+
+```tsx
+import { useTranslations } from 'next-intl';
+
+export function Welcome({ name, itemCount }: { name: string; itemCount: number }) {
+  const t = useTranslations('common');
+
+  return (
+    <div>
+      <h1>{t('welcome', { name })}</h1>
+      <p>{t('items', { count: itemCount })}</p>
+    </div>
+  );
+}
+```
+
+**RTL support:**
+
+```tsx
+// app/[locale]/layout.tsx
+export default function LocaleLayout({ children, params: { locale } }) {
+  const dir = ['ar', 'he'].includes(locale) ? 'rtl' : 'ltr';
+
+  return (
+    <html lang={locale} dir={dir}>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+## Authentication Patterns
+
+**JWT handling:**
+
+```tsx
+// lib/auth.ts
+import { jwtVerify, SignJWT } from 'jose';
+
+const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+
+export async function createToken(userId: string): Promise<string> {
+  return new SignJWT({ userId })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime('24h')
+    .sign(secret);
+}
+
+export async function verifyToken(token: string) {
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    return payload;
+  } catch {
+    return null;
+  }
+}
+```
+
+**Protected routes middleware:**
+
+```tsx
+// middleware.ts
+import { NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/auth';
+
+export async function middleware(request: NextRequest) {
+  const token = request.cookies.get('auth-token')?.value;
+
+  if (!token) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  const payload = await verifyToken(token);
+  if (!payload) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ['/dashboard/:path*', '/settings/:path*'],
+};
+```
+
+**OAuth flow (example with Google):**
+
+```tsx
+// app/api/auth/google/route.ts
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const code = searchParams.get('code');
+
+  // Exchange code for tokens
+  const tokens = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      code: code!,
+      client_id: process.env.GOOGLE_CLIENT_ID!,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+      redirect_uri: `${process.env.NEXT_PUBLIC_URL}/api/auth/google`,
+      grant_type: 'authorization_code',
+    }),
+  }).then(r => r.json());
+
+  // Create session, redirect to app
+  const response = NextResponse.redirect(new URL('/dashboard', request.url));
+  response.cookies.set('auth-token', await createToken(tokens.sub), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 86400,
+  });
+
+  return response;
+}
+```
+
+## Progressive Web App (PWA)
+
+**Web app manifest:**
+
+```json
+// public/manifest.json
+{
+  "name": "My Application",
+  "short_name": "MyApp",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0070f3",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
+```
+
+**Service worker for offline support:**
+
+```tsx
+// next.config.js (using next-pwa)
+const withPWA = require('next-pwa')({
+  dest: 'public',
+  disable: process.env.NODE_ENV === 'development',
+});
+
+module.exports = withPWA({
+  // Next.js config
+});
+```
+
+**Offline-first data pattern:**
+
+```tsx
+import { useQuery } from '@tanstack/react-query';
+
+function useOfflineData<T>(key: string, fetcher: () => Promise<T>) {
+  return useQuery({
+    queryKey: [key],
+    queryFn: fetcher,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 60 * 24, // 24 hours in cache
+    networkMode: 'offlineFirst',
+  });
+}
+```
+
 ## Package Management
 
 **Lock dependencies:**
@@ -643,6 +910,11 @@ Avoid these mistakes:
 | `any` type in TypeScript | Proper types or `unknown` |
 | Commit `.env` files | Use `.env.example` template |
 | Client-side secrets | Server-side environment variables |
+| Hardcode text strings | Use i18n library for all user-facing text |
+| Skip meta tags | Configure title, description, OG tags |
+| Store JWT in localStorage | Use httpOnly cookies |
+| No loading states | Show skeleton or spinner during fetches |
+| Ignore mobile viewport | Test responsive behavior |
 
 ## Quick Reference
 
@@ -656,6 +928,10 @@ Avoid these mistakes:
 | Forms | React Hook Form (complex) |
 | Testing | React Testing Library + Jest |
 | Routing | Next.js App Router or React Router |
+| i18n | next-intl or react-intl |
+| Auth | jose (JWT), next-auth (OAuth) |
+| PWA | next-pwa |
+| SEO | Next.js Metadata API |
 
 ## When Building Web Apps
 
@@ -667,4 +943,13 @@ Avoid these mistakes:
 6. Test critical user flows
 7. Follow accessibility guidelines
 8. Never commit secrets or API keys
+9. Configure SEO meta tags for all pages
+10. Add i18n support early if multilingual
+11. Store auth tokens in httpOnly cookies
+12. Test on slow networks and mobile devices
+
+## See Also
+
+- AGENTS_PYTHON.md for backend Python services
+- AGENTS_ADR.md for documenting architectural decisions
 

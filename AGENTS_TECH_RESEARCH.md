@@ -327,7 +327,6 @@ If we need 10k+ writes/day -> test quotas + batching strategy
 | Output files | `SUMMARY.md`, `TECHNICAL_EVALUATION.md`, `BUSINESS_REVIEW.md`, `DECISION_LOG.md`, `REFERENCES.md` |
 | Required sections | Overview, Availability, Pricing, Technical Impact, Implementation Needs, Use Cases, Risks, Alternatives, Business Impact, Recommendation, References |
 | Pipeline demo | Required if shipping code: Makefile or CI snippet with build/test/package/release |
-| Pipeline demo | Required if shipping code: Makefile or CI snippet with build/test/package/release |
 | Evidence standard | Official docs first; call out unknowns and plan gates; quantify limits |
 | Recommendation format | Adopt / No / Pilot + success criteria + exit criteria |
 | Writing style | Tables and bullets; short paragraphs; two-audience split |
@@ -338,8 +337,13 @@ If we need 10k+ writes/day -> test quotas + batching strategy
 2. Identify plan gates and hard constraints early (pricing, quotas, security).
 3. Map 2-3 concrete workflows end-to-end, including failure modes.
 4. Document integration requirements: auth, network, data model, ownership.
-5. Compare at least 2 alternatives with clear “when to choose”.
+5. Compare at least 2 alternatives with clear "when to choose".
 6. Produce a recommendation with measurable success + exit criteria.
 7. Add curated references with one-line annotations.
+
+## See Also
+
+- AGENTS_ADR.md for documenting architectural decisions
+- AGENTS_ADR_RESEARCH.md for ADR research methodology
 
 

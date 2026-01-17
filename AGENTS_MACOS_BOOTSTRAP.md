@@ -812,6 +812,11 @@ brew install --cask kap
 - System Integrity Protection (SIP) blocks some modifications
 - Check if domain is protected with `defaults read <domain>`
 
+## See Also
+
+- AGENTS_CLI.md for command-line tool patterns in the bootstrap scripts
+- AGENTS_PYTHON.md for Python automation scripts
+
 ---
 
 For examples of complete bootstrap scripts, see `examples/bootstrap-sample/` in this repository.

@@ -392,6 +392,147 @@ def safe_write(filepath, content):
         raise
 ```
 
+## Signal Handling
+
+**Handle Ctrl+C gracefully:**
+
+```python
+import signal
+import sys
+
+def signal_handler(signum, frame):
+    print("\nInterrupted. Cleaning up...", file=sys.stderr)
+    # Cleanup code here
+    sys.exit(130)  # Standard exit code for SIGINT
+
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+```
+
+**With context manager for cleanup:**
+
+```python
+import contextlib
+
+@contextlib.contextmanager
+def cleanup_on_exit(cleanup_func):
+    try:
+        yield
+    except KeyboardInterrupt:
+        print("\nInterrupted", file=sys.stderr)
+        cleanup_func()
+        sys.exit(130)
+    finally:
+        cleanup_func()
+
+# Usage
+with cleanup_on_exit(lambda: temp_dir.cleanup()):
+    long_running_process()
+```
+
+## Streaming and Piping
+
+**Handle piped input:**
+
+```python
+import sys
+
+def main():
+    if not sys.stdin.isatty():
+        # Data is being piped in
+        for line in sys.stdin:
+            process_line(line.strip())
+    else:
+        # Interactive mode
+        parser.parse_args()
+```
+
+**Stream large outputs:**
+
+```python
+import sys
+
+def export_records(records):
+    for record in records:
+        # Write immediately, don't buffer
+        sys.stdout.write(json.dumps(record) + "\n")
+        sys.stdout.flush()  # Ensure piped consumers receive data
+```
+
+**Handle broken pipes:**
+
+```python
+import errno
+
+try:
+    for item in large_dataset:
+        print(json.dumps(item))
+except BrokenPipeError:
+    # Reader closed pipe (e.g., head -n 10)
+    sys.stderr.close()  # Suppress Python error message
+    sys.exit(0)
+except IOError as e:
+    if e.errno == errno.EPIPE:
+        sys.exit(0)
+    raise
+```
+
+## Shell Completion
+
+**Generate completion scripts:**
+
+```python
+# For argparse with argcomplete
+import argcomplete
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--format", choices=["json", "csv", "text"])
+argcomplete.autocomplete(parser)
+args = parser.parse_args()
+```
+
+**Install completion for users:**
+
+```bash
+# Bash - add to ~/.bashrc
+eval "$(register-python-argcomplete mytool)"
+
+# Zsh - add to ~/.zshrc
+autoload -U bashcompinit
+bashcompinit
+eval "$(register-python-argcomplete mytool)"
+```
+
+**For click-based CLIs:**
+
+```python
+import click
+
+@click.command()
+@click.option('--format', type=click.Choice(['json', 'csv', 'text']))
+def main(format):
+    pass
+
+# Generate completion script
+# mytool --install-completion bash
+```
+
+**Document shell completion in README:**
+
+```markdown
+## Shell Completion
+
+Enable tab completion:
+
+```bash
+# Bash
+echo 'eval "$(mytool --completion bash)"' >> ~/.bashrc
+
+# Zsh
+echo 'eval "$(mytool --completion zsh)"' >> ~/.zshrc
+```
+```
+
 ## Testing CLIs
 
 **Test with subprocess:**
@@ -416,6 +557,31 @@ def test_invalid_argument():
     )
     assert result.returncode == 2
     assert "unrecognized arguments" in result.stderr
+```
+
+**Test piped input:**
+
+```python
+def test_piped_input():
+    result = subprocess.run(
+        ["python", "-m", "src.cli"],
+        input="line1\nline2\n",
+        capture_output=True,
+        text=True
+    )
+    assert result.returncode == 0
+    assert "Processed 2 lines" in result.stdout
+
+def test_signal_handling():
+    proc = subprocess.Popen(
+        ["python", "-m", "src.cli", "--slow"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    time.sleep(0.5)
+    proc.send_signal(signal.SIGTERM)
+    _, stderr = proc.communicate()
+    assert proc.returncode == 143  # 128 + 15 (SIGTERM)
 ```
 
 ## Common Flags
@@ -444,8 +610,13 @@ Avoid these mistakes:
 | Prompt in non-interactive context | Check `sys.stdin.isatty()` |
 | Parse args manually | Use argparse/click |
 | Hardcode file paths | Use Path and relative paths |
-| Ignore Ctrl+C | Handle KeyboardInterrupt |
+| Ignore Ctrl+C | Handle `signal.SIGINT` |
 | Long-running task without progress | Show progress bar or status |
+| Buffer all output then print | Stream output line by line |
+| Crash on broken pipe | Catch `BrokenPipeError`, exit cleanly |
+| Ignore `SIGTERM` | Clean up resources before exit |
+| Require specific shell | Support bash, zsh, and sh |
+| Large memory usage for big files | Stream and process in chunks |
 
 ## README Requirements for CLI Tools
 
@@ -489,6 +660,10 @@ mytool username -o output/ --limit 10 --verbose
 | Config format | YAML or TOML |
 | Exit on success | `sys.exit(0)` or just return |
 | Exit on error | `sys.exit(1)` with message to stderr |
+| Signal handling | Catch `SIGINT` and `SIGTERM` |
+| Shell completion | `argcomplete` for argparse |
+| Piped input | Check `sys.stdin.isatty()` |
+| Large data | Stream with generators |
 
 ## When Building CLI Tools
 
@@ -499,4 +674,12 @@ mytool username -o output/ --limit 10 --verbose
 5. Show progress for long operations
 6. Document all environment variables
 7. Provide practical examples in help text
+8. Handle `SIGINT` and `SIGTERM` for cleanup
+9. Support piped input and output
+10. Offer shell completion scripts
+
+## See Also
+
+- AGENTS_PYTHON.md for Python code patterns
+- AGENTS_README.md for documenting CLI tools
 

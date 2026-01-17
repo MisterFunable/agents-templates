@@ -245,6 +245,222 @@ output_file = "exports/" + "result.json"
 - Files close automatically on error
 - No need for manual cleanup
 
+## Async/Await
+
+Use `asyncio` for I/O-bound concurrent operations:
+
+```python
+import asyncio
+import aiohttp
+
+async def fetch_url(session: aiohttp.ClientSession, url: str) -> dict:
+    async with session.get(url) as response:
+        return await response.json()
+
+async def fetch_all(urls: list[str]) -> list[dict]:
+    async with aiohttp.ClientSession() as session:
+        tasks = [fetch_url(session, url) for url in urls]
+        return await asyncio.gather(*tasks)
+
+# Run async code
+results = asyncio.run(fetch_all(["https://api.example.com/1", "https://api.example.com/2"]))
+```
+
+**When to use async:**
+- Multiple HTTP requests
+- Database queries with async driver
+- File I/O with `aiofiles`
+
+**When NOT to use async:**
+- CPU-bound operations (use `multiprocessing`)
+- Simple scripts with sequential logic
+- When sync code is clearer
+
+## Dataclasses and Pydantic
+
+**Use dataclasses for simple data containers:**
+
+```python
+from dataclasses import dataclass, field
+from datetime import datetime
+
+@dataclass
+class User:
+    name: str
+    email: str
+    created_at: datetime = field(default_factory=datetime.now)
+    tags: list[str] = field(default_factory=list)
+
+user = User(name="Alice", email="alice@example.com")
+```
+
+**Use Pydantic for validation and serialization:**
+
+```python
+from pydantic import BaseModel, EmailStr, Field
+
+class UserCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    email: EmailStr
+    age: int = Field(ge=0, le=150)
+
+# Validates on creation
+user = UserCreate(name="Alice", email="alice@example.com", age=30)
+
+# Serialize to dict/JSON
+user.model_dump()
+user.model_dump_json()
+```
+
+**When to use which:**
+
+| Use Case | Choice |
+|----------|--------|
+| Internal data structures | dataclass |
+| API request/response models | Pydantic |
+| Config file parsing | Pydantic |
+| Simple DTOs | dataclass |
+| Data with complex validation | Pydantic |
+
+## Type Checking
+
+**Run mypy for static type checking:**
+
+```bash
+pip install mypy
+mypy src/ --strict
+```
+
+**Common type patterns:**
+
+```python
+from typing import Optional, Union
+from collections.abc import Callable, Iterator
+
+# Optional (can be None)
+def find_user(id: int) -> Optional[User]:
+    return users.get(id)
+
+# Union types
+def process(value: int | str) -> str:  # Python 3.10+
+    return str(value)
+
+# Callable types
+def retry(func: Callable[[], bool], attempts: int = 3) -> bool:
+    for _ in range(attempts):
+        if func():
+            return True
+    return False
+
+# Generic containers
+def first(items: list[T]) -> T | None:
+    return items[0] if items else None
+```
+
+**Type narrowing:**
+
+```python
+def process_response(data: dict | None) -> str:
+    if data is None:
+        return "No data"
+    # mypy knows data is dict here
+    return data.get("result", "")
+```
+
+## Security
+
+**Dependency scanning:**
+
+```bash
+pip install pip-audit
+pip-audit  # Check for known vulnerabilities
+```
+
+**Input validation:**
+
+```python
+import re
+from pathlib import Path
+
+# Validate file paths (prevent path traversal)
+def safe_path(user_input: str, base_dir: Path) -> Path:
+    resolved = (base_dir / user_input).resolve()
+    if not resolved.is_relative_to(base_dir):
+        raise ValueError("Path traversal detected")
+    return resolved
+
+# Validate and sanitize strings
+def sanitize_filename(name: str) -> str:
+    return re.sub(r'[^\w\-.]', '_', name)
+```
+
+**Secrets handling:**
+
+```python
+import secrets
+from hashlib import sha256
+
+# Generate secure tokens
+token = secrets.token_urlsafe(32)
+
+# Compare secrets safely (timing-attack resistant)
+secrets.compare_digest(user_token, stored_token)
+
+# Never log secrets
+logger.info(f"User authenticated")  # Good
+logger.info(f"Token: {token}")      # Bad
+```
+
+**SQL injection prevention:**
+
+```python
+# Bad - string formatting
+cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")
+
+# Good - parameterized queries
+cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+```
+
+## Edge Cases
+
+**Handle encoding issues:**
+
+```python
+# Explicit encoding for file I/O
+with open(filepath, "r", encoding="utf-8") as f:
+    content = f.read()
+
+# Handle mixed encodings
+def safe_read(filepath: Path) -> str:
+    try:
+        return filepath.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return filepath.read_text(encoding="latin-1")
+```
+
+**Handle circular imports:**
+
+```python
+# Use TYPE_CHECKING for type-only imports
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .models import User  # Only imported during type checking
+
+def get_user() -> "User":  # Forward reference as string
+    from .models import User
+    return User()
+```
+
+**Handle large files:**
+
+```python
+def process_large_file(filepath: Path) -> Iterator[str]:
+    with filepath.open() as f:
+        for line in f:  # Iterate line by line, not load all
+            yield line.strip()
+```
+
 ## Anti-Patterns
 
 Avoid these common mistakes:
@@ -258,6 +474,11 @@ Avoid these common mistakes:
 | `print()` for logging | Use `logging` module |
 | String path concatenation | Use `pathlib.Path` |
 | Commit secrets in code | Use environment variables |
+| `async def` for CPU-bound work | Use `multiprocessing` |
+| Mutable default arguments | Use `field(default_factory=list)` |
+| Ignore type checker errors | Fix or add `# type: ignore` with reason |
+| Format SQL with f-strings | Use parameterized queries |
+| Load entire file into memory | Stream with iterators |
 
 ## Version Support
 
@@ -298,12 +519,24 @@ your-command = "your_package.main:main"
 | Blank lines | 2 between top-level, 1 between methods |
 | Main guard | `if __name__ == "__main__":` |
 | Shebang | `#!/usr/bin/env python3` (executable scripts) |
+| Type checking | mypy with `--strict` |
+| Data classes | `dataclasses` (simple) or Pydantic (validation) |
+| Async HTTP | `aiohttp` or `httpx` |
+| Security scanning | `pip-audit` |
 
 ## When Working on Python Projects
 
 1. Create virtual environment first
 2. Pin dependencies in requirements.txt
 3. Use type hints for non-trivial functions
-4. Test with fresh environment before committing
-5. Keep README updated with setup instructions
+4. Run `mypy` before committing
+5. Run `pip-audit` to check for vulnerabilities
+6. Use dataclasses or Pydantic for structured data
+7. Handle encoding explicitly in file I/O
+8. Test with fresh environment before committing
+
+## See Also
+
+- AGENTS_CLI.md for command-line tool patterns
+- AGENTS_WEBAPP.md for web application backends
 

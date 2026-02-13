@@ -13,11 +13,21 @@ Think of them as style guides, but for entire projects instead of just code.
 **Step 1: Pick a template**
 
 ```
+Core Development:
 AGENTS_README.md    → Writing clean READMEs
 AGENTS_PYTHON.md    → Python project structure
 AGENTS_CLI.md       → Command-line tools
 AGENTS_WEBAPP.md    → Web applications
-AGENTS_POETRY.md    → Writing poetry (forms, techniques, revision)
+AGENTS_COMMON.md    → Error handling, security, testing patterns
+AGENTS_PROMPT.md    → Quick-fix prompts for common tasks
+
+Specialized:
+AGENTS_MACOS_BOOTSTRAP.md  → macOS setup automation
+AGENTS_ADR.md              → Architecture Decision Records
+AGENTS_TECH_RESEARCH.md    → Technology evaluation
+AGENTS_POETRY.md           → Writing poetry
+
+Meta:
 AGENTS_TEMPLATE.md  → Creating new templates (meta-template)
 ```
 

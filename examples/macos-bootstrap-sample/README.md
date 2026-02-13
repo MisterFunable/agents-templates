@@ -1,10 +1,22 @@
 # macOS Bootstrap Script Example
 
-This example demonstrates how to use the `AGENTS_MACOS_BOOTSTRAP.md` template to create an automated macOS setup script.
+This example demonstrates automated macOS setup with two versions:
+
+1. **Enhanced Version** (`bootstrap.sh` + `macos-preferences.sh`) - Feature toggles via command-line flags
+2. **Modular Version** (`modular/`) - Separate files for each component with central configuration
+
+## What's New
+
+- ✅ **Fixed Spotlight Configuration** - Spotlight ordering now works correctly
+- ✅ **Feature Toggles** - Enable/disable features without editing code
+- ✅ **Modular Structure** - Split into reusable, independent modules
+- ✅ **Central Configuration** - Single config file for all settings (modular version)
+
+See [IMPROVEMENTS.md](IMPROVEMENTS.md) for detailed changes.
 
 ## Overview
 
-The bootstrap script in the parent directory (`../../bootstrap.sh`) automates the setup of a new macOS machine with:
+Both versions automate the setup of a new macOS machine with:
 
 - **System Preferences**: Keyboard, mouse, language settings
 - **Finder Configuration**: Show extensions, hidden files, path bar
@@ -14,36 +26,89 @@ The bootstrap script in the parent directory (`../../bootstrap.sh`) automates th
 - **Shell Setup**: Zsh with Oh My Zsh and useful plugins
 - **Applications**: GUI apps installed via Homebrew Cask
 
+## Which Version Should I Use?
+
+### Enhanced Version (Recommended for Most Users)
+```bash
+./bootstrap.sh              # Full setup
+./bootstrap.sh --minimal    # Minimal setup
+./bootstrap.sh --no-docker  # Custom setup
+```
+
+**Use if you want:**
+- Simple, traditional script structure
+- Command-line flags for quick customization
+- Minimal changes from original
+
+### Modular Version (Recommended for Advanced Users)
+```bash
+cd modular
+vim config.sh                            # Customize settings
+./bootstrap-modular.sh                   # Full setup
+./bootstrap-modular.sh homebrew zsh      # Specific modules
+```
+
+**Use if you want:**
+- Maximum flexibility and customization
+- Easy-to-reference separate component files
+- Reusable modules for other projects
+- Central configuration file
+
 ## Quick Start
 
-### From Fresh macOS Install
+### Enhanced Version
+```bash
+# Run with default settings
+./bootstrap.sh
+
+# Skip Docker and ASDF
+./bootstrap.sh --no-docker --no-asdf
+
+# System preferences only
+./macos-preferences.sh
+
+# Get help
+./bootstrap.sh --help
+```
+
+### Modular Version
+```bash
+# Edit configuration
+vim modular/config.sh
+
+# Run all enabled modules
+cd modular && ./bootstrap-modular.sh
+
+# Run specific modules only
+./bootstrap-modular.sh homebrew zsh developer
+
+# List available modules
+./bootstrap-modular.sh --list
+```
+
+### From Fresh macOS Install (Enhanced Version)
 
 1. Open Terminal
-2. Run the bootstrap script directly from gist:
+2. Download and run:
 
 ```bash
-bash -c "$(curl -fsSL https://gist.githubusercontent.com/YourUsername/your-gist-id/raw/bootstrap.sh)"
+curl -fsSL https://raw.githubusercontent.com/YourUsername/repo/main/bootstrap.sh | bash
 ```
 
-### From Local Copy
+Or for more control:
 
-1. Download the script:
 ```bash
-curl -fsSL https://gist.githubusercontent.com/YourUsername/your-gist-id/raw/bootstrap.sh -o bootstrap.sh
-```
+# Download
+curl -fsSL https://raw.githubusercontent.com/YourUsername/repo/main/bootstrap.sh -o bootstrap.sh
+curl -fsSL https://raw.githubusercontent.com/YourUsername/repo/main/macos-preferences.sh -o macos-preferences.sh
 
-2. Make it executable:
-```bash
-chmod +x bootstrap.sh
-```
+# Make executable
+chmod +x bootstrap.sh macos-preferences.sh
 
-3. Review the script:
-```bash
+# Review
 less bootstrap.sh
-```
 
-4. Run it:
-```bash
+# Run
 ./bootstrap.sh
 ```
 
@@ -187,17 +252,22 @@ defaults delete com.apple.dock persistent-others
 
 ### Spotlight Categories Not Working
 
-**Issue**: Category names are language-specific.
+**Issue**: This has been fixed in the new versions!
 
-**Solution**: The script auto-detects your language. Verify with:
+**Solution**: Spotlight category names are **always in English** internally, regardless of system language. The updated scripts now use the correct English keys:
 
 ```bash
-defaults read -g AppleLanguages | head -2 | tail -1 | tr -d ' ",'
+# ✅ Correct - works on all systems
+'{"enabled" = 1;"name" = "APPLICATIONS";}'
+
+# ❌ Wrong - localized names don't exist
+'{"enabled" = 1;"name" = "APLICACIONES";}'
 ```
 
-Use correct category names:
-- English: `APPLICATIONS`, `MENU_DEFINITION`, etc.
-- Spanish: `APLICACIONES`, `MENU_DEFINITION`, etc.
+If Spotlight still doesn't work after running the script, rebuild the index:
+```bash
+sudo mdutil -E /
+```
 
 ### Security Settings Require Admin Password
 

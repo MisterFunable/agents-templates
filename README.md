@@ -17,14 +17,30 @@ Drop these files into your repository to guide AI models on coding style, README
 
 ## Templates
 
+### Core Development Templates
+
 | File | Purpose |
 |------|---------|
 | `AGENTS_README.md` | Guidelines for generating clean, scannable README files |
 | `AGENTS_PYTHON.md` | Python project structure, style, and best practices |
 | `AGENTS_CLI.md` | Command-line tool patterns and documentation |
 | `AGENTS_WEBAPP.md` | Web application structure and frontend conventions |
-| `AGENTS_POETRY.md` | Poetry writing techniques, forms, and revision guidelines |
+| `AGENTS_COMMON.md` | Cross-cutting patterns: error handling, security, testing, observability |
+| `AGENTS_PROMPT.md` | Multipurpose prompts for common tasks: code review, refactoring, testing, documentation |
+
+### Specialized Templates
+
+| File | Purpose |
+|------|---------|
+| `AGENTS_MACOS_BOOTSTRAP.md` | macOS system setup and automation scripts |
+| `AGENTS_ADR.md` | Architecture Decision Records for documenting technical decisions |
 | `AGENTS_TECH_RESEARCH.md` | Technology research and evaluation for engineering + business stakeholders |
+| `AGENTS_POETRY.md` | Poetry writing techniques, forms, and revision guidelines |
+
+### Meta Templates
+
+| File | Purpose |
+|------|---------|
 | `AGENTS_TEMPLATE.md` | Meta-template for creating new AGENTS.md files |
 
 ## Usage
@@ -50,23 +66,36 @@ Edit the file to match your project's specific requirements. Most templates work
 
 ```
 agents-templates/
-├── README.md                 # This file
-├── QUICK_START.md            # 2-minute getting started guide
-├── CONTRIBUTING.md           # How to add new templates
+├── README.md                      # This file
+├── CLAUDE.md                      # Guide for Claude Code working in this repo
+├── QUICK_START.md                 # 2-minute getting started guide
+├── CONTRIBUTING.md                # How to add new templates
+├── IMPROVEMENTS_SUGGESTIONS.md    # New template ideas and enhancements
 │
-├── AGENTS_README.md          # README generation rules
-├── AGENTS_PYTHON.md          # Python project guidelines
-├── AGENTS_CLI.md             # CLI tool patterns
-├── AGENTS_WEBAPP.md          # Web app conventions
-├── AGENTS_TEMPLATE.md        # Template for creating templates
-├── AGENTS_TECH_RESEARCH.md   # Tech research + evaluation template
+├── Core Development Templates
+│   ├── AGENTS_README.md           # README generation rules
+│   ├── AGENTS_PYTHON.md           # Python project guidelines
+│   ├── AGENTS_CLI.md              # CLI tool patterns
+│   ├── AGENTS_WEBAPP.md           # Web app conventions
+│   ├── AGENTS_COMMON.md           # Cross-cutting patterns
+│   └── AGENTS_PROMPT.md           # Multipurpose prompts and quick fixes
 │
-└── examples/                 # Reference implementations
-    ├── readme-sample/        # Before/after README examples
-    ├── python-sample/        # Python script example
-    ├── cli-sample/           # CLI tool example
-    ├── poetry-sample/        # Poetry examples (sonnet, haiku, free verse)
-    ├── tech-research-sample/ # Example evaluation writeups
+├── Specialized Templates
+│   ├── AGENTS_MACOS_BOOTSTRAP.md  # macOS setup automation
+│   ├── AGENTS_ADR.md              # Architecture Decision Records
+│   ├── AGENTS_TECH_RESEARCH.md    # Technology evaluation
+│   └── AGENTS_POETRY.md           # Poetry writing
+│
+├── Meta Templates
+│   └── AGENTS_TEMPLATE.md         # Template for creating templates
+│
+└── examples/                      # Reference implementations
+    ├── readme-sample/             # Before/after README examples
+    ├── python-sample/             # Python script example
+    ├── cli-sample/                # CLI tool example
+    ├── poetry-sample/             # Poetry examples
+    ├── macos-bootstrap-sample/    # macOS automation example
+    ├── tech-research-sample/      # Example evaluation writeups
     └── template-creation-sample/  # How to use AGENTS_TEMPLATE.md
 ```
 

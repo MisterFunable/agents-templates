@@ -27,8 +27,10 @@ agents-templates/
 │   ├── AGENTS_TECH_RESEARCH.md   # Technology evaluation and research
 │   ├── AGENTS_TEMPLATE.md        # Meta-template for creating templates (V1)
 │   ├── AGENTS_TEMPLATE_V2.md     # Optimized meta-template (V2, recommended)
-│   ├── AGENTS_CLAUDE_MD.md       # Guidelines for creating CLAUDE.md files
-│   └── TEMPLATE_V2_MIGRATION.md  # Migration guide from V1 to V2
+│   ├── AGENTS_CLAUDE_MD.md       # Guidelines for creating CLAUDE.md files (V1)
+│   ├── AGENTS_CLAUDE_MD_V2.md    # Optimized CLAUDE.md creation (V2, recommended)
+│   ├── TEMPLATE_V2_MIGRATION.md  # Migration guide from V1 to V2
+│   └── CLAUDE_MD_V2_COMPARISON.md # CLAUDE.md V1 vs V2 comparison
 ├── examples/            # Reference implementations
 │   ├── python-sample/
 │   ├── cli-sample/
@@ -99,14 +101,14 @@ See TEMPLATE_V2_MIGRATION.md for converting existing V1 templates to V2.
 
 ### Creating a CLAUDE.md File
 
-1. Use AGENTS_CLAUDE_MD.md as guide
-2. Analyze repository: README, entry points, directory structure, tests
-3. Identify patterns: class naming, import structure, configuration
-4. Review git history: frequent file changes, commit patterns
-5. Document 3-5 key architectural concepts with code examples
-6. Create anti-patterns table (6-10 project-specific items)
-7. Write "When Working in This Repository" checklist (5-10 items)
-8. Keep total length 150-300 lines (max 400)
+1. Use **AGENTS_CLAUDE_MD_V2.md** as guide (recommended - 50% faster)
+2. Follow 4-phase process (Analysis → Pattern Discovery → Write → Validate)
+3. Target 150-250 lines (max 300) for optimal results
+4. Document 2-3 key architectural patterns with 5-10 line examples
+5. Create anti-patterns table (6-8 project-specific items)
+6. Write "When Working in This Repository" checklist (6-8 items)
+7. Use decision tables instead of prose for guidelines
+8. Time-box creation to 40 minutes total (10+10+15+5)
 
 ### Modifying Existing Templates
 
@@ -131,7 +133,8 @@ Examples should:
 |------|---------|-------------------|
 | AGENTS_TEMPLATE_V2.md | **Recommended:** Optimized meta-template with efficiency metrics | Creating any new AGENTS_*.md file |
 | AGENTS_TEMPLATE.md | Original meta-template (V1) | Reference for comparison, use V2 for new templates |
-| AGENTS_CLAUDE_MD.md | Guidelines for creating CLAUDE.md files | Creating repository context for Claude Code |
+| AGENTS_CLAUDE_MD_V2.md | **Recommended:** Optimized CLAUDE.md creation (50% faster) | Creating repository context for Claude Code |
+| AGENTS_CLAUDE_MD.md | Original CLAUDE.md guidelines (V1) | Reference for comparison, use V2 for new files |
 | AGENTS_COMMON.md | Cross-cutting patterns (error handling, security, performance, testing, observability) | When any template needs shared implementation patterns |
 | AGENTS_ADR_RESEARCH.md | Research methodology for architectural decisions | Writing ADRs with proper research and analysis |
 | TEMPLATE_V2_MIGRATION.md | V1 to V2 migration guide with optimization strategies | Converting existing templates to V2 |

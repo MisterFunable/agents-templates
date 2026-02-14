@@ -47,8 +47,10 @@ Drop these files into your repository to guide AI models on coding style, README
 |------|---------|
 | `AGENTS_TEMPLATE.md` | Meta-template for creating new AGENTS.md files (V1) |
 | `AGENTS_TEMPLATE_V2.md` | **Optimized** meta-template with efficiency metrics (recommended for new templates) |
-| `AGENTS_CLAUDE_MD.md` | Guidelines for creating CLAUDE.md files (project context for Claude Code) |
+| `AGENTS_CLAUDE_MD.md` | Guidelines for creating CLAUDE.md files (V1) |
+| `AGENTS_CLAUDE_MD_V2.md` | **Optimized** CLAUDE.md creation with 50% faster results (recommended) |
 | `TEMPLATE_V2_MIGRATION.md` | Migration guide from V1 to V2 templates with optimization strategies |
+| `CLAUDE_MD_V2_COMPARISON.md` | CLAUDE.md V1 vs V2 comparison and migration guide |
 
 ## Usage
 
@@ -100,8 +102,10 @@ agents-templates/
 ├── Meta Templates
 │   ├── AGENTS_TEMPLATE.md         # Template creation (V1)
 │   ├── AGENTS_TEMPLATE_V2.md      # Optimized template creation (V2, recommended)
-│   ├── AGENTS_CLAUDE_MD.md        # CLAUDE.md file creation
-│   └── TEMPLATE_V2_MIGRATION.md   # V1 to V2 migration guide
+│   ├── AGENTS_CLAUDE_MD.md        # CLAUDE.md file creation (V1)
+│   ├── AGENTS_CLAUDE_MD_V2.md     # Optimized CLAUDE.md creation (V2, recommended)
+│   ├── TEMPLATE_V2_MIGRATION.md   # V1 to V2 migration guide
+│   └── CLAUDE_MD_V2_COMPARISON.md # CLAUDE.md V1 vs V2 comparison
 │
 └── examples/                      # Reference implementations
     ├── readme-sample/             # Before/after README examples

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eks-webapp-config
+  labels:
+    app: eks-webapp
+data:
+  # Application configuration (non-sensitive)
+  PORT: "8000"
+  LOG_LEVEL: "INFO"
+  SERVICE_NAME: "eks-webapp"
+
+  # Optional: Add other environment-specific config
+  # REDIS_URL: "redis://redis-service:6379"

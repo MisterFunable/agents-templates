@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eks-webapp
+  labels:
+    app: eks-webapp
+    version: "1.0.0"
+spec:
+  replicas: 3  # High availability with 3 replicas
+  selector:
+    matchLabels:
+      app: eks-webapp
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1        # Max 1 extra pod during update
+      maxUnavailable: 0  # Keep all pods available (zero-downtime)
+  template:
+    metadata:
+      labels:
+        app: eks-webapp
+        version: "1.0.0"
+    spec:
+      # Security: Run as non-root
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534  # nobody user
+        fsGroup: 65534
+
+      containers:
+      - name: eks-webapp
+        image: your-registry/eks-webapp:1.0.0  # Update with your registry
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+
+        # Environment variables from ConfigMap
+        envFrom:
+        - configMapRef:
+            name: eks-webapp-config
+
+        # Sensitive data from Secrets (example)
+        # env:
+        # - name: DATABASE_URL
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: eks-webapp-secrets
+        #       key: database-url
+
+        # Resource limits and requests
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+        # Liveness probe: Restart if unhealthy
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 3
+
+        # Readiness probe: Route traffic only when ready
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          successThreshold: 1
+          failureThreshold: 2
+
+        # Security context for container
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false  # Set to true if app doesn't need to write
+          capabilities:
+            drop:
+            - ALL
+
+      # Graceful shutdown period
+      terminationGracePeriodSeconds: 30
+
+      # Optional: Node affinity for better distribution
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - eks-webapp
+              topologyKey: kubernetes.io/hostname

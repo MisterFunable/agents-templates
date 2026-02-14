@@ -11,16 +11,24 @@ This is a template repository containing instruction files (AGENTS_*.md) that gu
 ```
 agents-templates/
 ├── AGENTS_*.md          # Template files for different project types
-│   ├── AGENTS_README.md     # README writing guidelines
-│   ├── AGENTS_PYTHON.md     # Python project structure
-│   ├── AGENTS_CLI.md        # CLI tool patterns
-│   ├── AGENTS_WEBAPP.md     # Web app conventions
-│   ├── AGENTS_POETRY.md     # Poetry writing guidelines
-│   ├── AGENTS_TEMPLATE.md   # Meta-template for creating templates
-│   ├── AGENTS_COMMON.md     # Cross-cutting patterns (error handling, security, etc.)
-│   ├── AGENTS_MACOS_BOOTSTRAP.md  # macOS setup automation
-│   ├── AGENTS_ADR.md        # Architecture Decision Records
-│   └── [others]
+│   ├── AGENTS_README.md          # README writing guidelines
+│   ├── AGENTS_PYTHON.md          # Python project structure
+│   ├── AGENTS_CLI.md             # CLI tool patterns
+│   ├── AGENTS_WEBAPP.md          # Web app conventions
+│   ├── AGENTS_COMMON.md          # Cross-cutting patterns (error handling, security, performance)
+│   ├── AGENTS_PROMPT.md          # Multipurpose prompts for common tasks
+│   ├── AGENTS_POETRY.md          # Poetry writing guidelines
+│   ├── AGENTS_MACOS_BOOTSTRAP.md # macOS setup automation
+│   ├── AGENTS_AIRTABLE.md        # Airtable automations with Python
+│   ├── AGENTS_MERMAID.md         # Mermaid diagrams with MCP integration
+│   ├── AGENTS_EKS_WEBAPP.md      # EKS web apps (containerized, 12-factor)
+│   ├── AGENTS_ADR.md             # Architecture Decision Records
+│   ├── AGENTS_ADR_RESEARCH.md    # ADR research methodology
+│   ├── AGENTS_TECH_RESEARCH.md   # Technology evaluation and research
+│   ├── AGENTS_TEMPLATE.md        # Meta-template for creating templates (V1)
+│   ├── AGENTS_TEMPLATE_V2.md     # Optimized meta-template (V2, recommended)
+│   ├── AGENTS_CLAUDE_MD.md       # Guidelines for creating CLAUDE.md files
+│   └── TEMPLATE_V2_MIGRATION.md  # Migration guide from V1 to V2
 ├── examples/            # Reference implementations
 │   ├── python-sample/
 │   ├── cli-sample/
@@ -58,23 +66,47 @@ Target length: 250-300 lines (max 400)
 
 ### Creating New Templates
 
-The process (defined in AGENTS_TEMPLATE.md) has 5 phases:
-1. **Research**: Web search for practices, examples, tools, anti-patterns
-2. **Question**: Clarify scope, tools, integration with existing templates
-3. **Structure**: Define sections before writing
-4. **Write**: Follow strict guidelines (specific, examples, tables)
-5. **Validate**: Self-validation checklist, cross-reference check
+**Use AGENTS_TEMPLATE_V2.md for new templates** (optimized version with efficiency metrics).
+
+The V2 process is streamlined to 65 minutes total:
+1. **Scope** (5 min): Define domain, problems solved, target length
+2. **Research** (20 min): Time-boxed research of official docs, examples, common mistakes
+3. **Structure** (5 min): Create outline with 6 required sections
+4. **Write** (30 min): One example per concept, tables over prose
+5. **Validate** (5 min): 10-item checklist for quality assurance
+
+**V2 Key Improvements:**
+- Target length: 250-350 lines (V1 allowed up to 400)
+- Examples: 1-2 per concept (V1 showed 4-6 variants)
+- Decision tables instead of prose explanations
+- Built-in efficiency metrics
+- Clearer mandatory vs optional guidance
+- Read time: <10 minutes (V1 was ~15 minutes)
+
+See TEMPLATE_V2_MIGRATION.md for converting existing V1 templates to V2.
 
 ## Common Development Tasks
 
 ### Adding a New Template
 
-1. Research the domain thoroughly using AGENTS_TEMPLATE.md as guide
+1. Research the domain thoroughly using **AGENTS_TEMPLATE_V2.md** as guide (recommended)
 2. Check existing templates for overlaps (review all AGENTS_*.md files)
-3. Create `AGENTS_[TYPE].md` following the template structure
-4. Validate against checklist in AGENTS_TEMPLATE.md
-5. Create example in `examples/[type]-sample/`
-6. Update README.md to list the new template
+3. Create `AGENTS_[TYPE].md` following the V2 structure (6 required sections)
+4. Validate against 10-item checklist in AGENTS_TEMPLATE_V2.md
+5. Check efficiency metrics: 250-350 lines, 1-2 examples/concept, <10 min read time
+6. Create example in `examples/[type]-sample/`
+7. Update README.md and CLAUDE.md to list the new template
+
+### Creating a CLAUDE.md File
+
+1. Use AGENTS_CLAUDE_MD.md as guide
+2. Analyze repository: README, entry points, directory structure, tests
+3. Identify patterns: class naming, import structure, configuration
+4. Review git history: frequent file changes, commit patterns
+5. Document 3-5 key architectural concepts with code examples
+6. Create anti-patterns table (6-10 project-specific items)
+7. Write "When Working in This Repository" checklist (5-10 items)
+8. Keep total length 150-300 lines (max 400)
 
 ### Modifying Existing Templates
 
@@ -97,10 +129,48 @@ Examples should:
 
 | File | Purpose | When to Reference |
 |------|---------|-------------------|
-| AGENTS_TEMPLATE.md | Template for creating templates | Creating any new AGENTS_*.md file |
+| AGENTS_TEMPLATE_V2.md | **Recommended:** Optimized meta-template with efficiency metrics | Creating any new AGENTS_*.md file |
+| AGENTS_TEMPLATE.md | Original meta-template (V1) | Reference for comparison, use V2 for new templates |
+| AGENTS_CLAUDE_MD.md | Guidelines for creating CLAUDE.md files | Creating repository context for Claude Code |
+| AGENTS_COMMON.md | Cross-cutting patterns (error handling, security, performance, testing, observability) | When any template needs shared implementation patterns |
+| AGENTS_ADR_RESEARCH.md | Research methodology for architectural decisions | Writing ADRs with proper research and analysis |
+| TEMPLATE_V2_MIGRATION.md | V1 to V2 migration guide with optimization strategies | Converting existing templates to V2 |
 | CONTRIBUTING.md | Contribution guidelines | Before adding new content |
-| AGENTS_COMMON.md | Cross-cutting patterns | When templates need shared patterns |
 | README.md | Repository overview | Understanding project scope |
+
+## Template Specializations
+
+Recent template enhancements include:
+
+**AGENTS_PYTHON.md:**
+- Async/await patterns with asyncio
+- Dataclasses vs Pydantic decision guide
+- Type checking with mypy (strict mode)
+- Security patterns (pip-audit, input validation, SQL injection prevention)
+- Edge cases (encoding, circular imports, large files)
+
+**AGENTS_CLI.md:**
+- Signal handling (SIGINT/SIGTERM) with cleanup
+- Streaming and piping patterns
+- Shell completion (argcomplete, click)
+- Broken pipe handling
+
+**AGENTS_WEBAPP.md:**
+- SEO and meta tags (Next.js Metadata API, JSON-LD)
+- Internationalization (next-intl, RTL support)
+- Authentication patterns (JWT with jose, OAuth flow)
+- PWA support (manifest, service worker, offline-first)
+
+**AGENTS_ADR.md:**
+- Domain classification (Development, Infrastructure, Data)
+- Domain-specific sections (API contracts, capacity planning, data flow)
+- Status lifecycle (Proposed, Accepted, Deprecated, Superseded)
+
+**AGENTS_AIRTABLE.md:**
+- Batch operations (create/update/delete in batches of 10)
+- Rate limiting (5 requests/second per base)
+- Formula query building with escaping
+- Common automations (sync, cleanup, deduplication, export)
 
 ## Writing Style Requirements
 
@@ -115,10 +185,20 @@ Across all templates and documentation:
 
 ## Template Cross-References
 
-Templates reference each other when appropriate:
-- Python CLI tools → reference AGENTS_PYTHON.md and AGENTS_CLI.md
-- All templates → can reference AGENTS_COMMON.md for error handling, security, etc.
-- Check for 50%+ overlap before creating new template
+Templates include "See Also" sections linking related templates:
+
+| Template | References |
+|----------|------------|
+| AGENTS_PYTHON.md | AGENTS_CLI.md, AGENTS_WEBAPP.md |
+| AGENTS_CLI.md | AGENTS_PYTHON.md, AGENTS_README.md |
+| AGENTS_WEBAPP.md | AGENTS_PYTHON.md, AGENTS_ADR.md |
+| AGENTS_ADR.md | AGENTS_ADR_RESEARCH.md, AGENTS_TECH_RESEARCH.md |
+| AGENTS_ADR_RESEARCH.md | AGENTS_ADR.md, AGENTS_TECH_RESEARCH.md |
+| AGENTS_TECH_RESEARCH.md | AGENTS_ADR.md, AGENTS_ADR_RESEARCH.md |
+| AGENTS_MACOS_BOOTSTRAP.md | AGENTS_CLI.md, AGENTS_PYTHON.md |
+| AGENTS_AIRTABLE.md | AGENTS_PYTHON.md, AGENTS_CLI.md, AGENTS_COMMON.md |
+
+All templates can reference AGENTS_COMMON.md for shared patterns (error handling, security, performance, testing, observability).
 
 ## Anti-Patterns to Avoid
 
@@ -170,9 +250,11 @@ Since this is a documentation/template repository, "testing" means:
 
 1. Read AGENTS_TEMPLATE.md completely before creating new templates
 2. Check CONTRIBUTING.md for current guidelines
-3. Review existing templates for patterns and overlaps
+3. Review existing templates for patterns and overlaps (check for 50%+ overlap)
 4. Follow the 5-phase process for new templates (Research → Question → Structure → Write → Validate)
 5. Maintain consistency with existing templates
-6. Create example implementations for new templates
-7. Update README.md when adding templates
-8. Keep examples simple and focused
+6. Add "See Also" cross-references to related templates
+7. Reference AGENTS_COMMON.md for shared patterns instead of duplicating
+8. Create example implementations for new templates
+9. Update README.md and CLAUDE.md when adding templates
+10. Keep examples simple and focused (under 100 lines, runnable)

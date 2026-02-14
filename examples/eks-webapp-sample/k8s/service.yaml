@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eks-webapp-service
+  labels:
+    app: eks-webapp
+spec:
+  type: ClusterIP  # Internal service (use LoadBalancer or Ingress for external access)
+  selector:
+    app: eks-webapp
+  ports:
+  - name: http
+    protocol: TCP
+    port: 80        # Service port
+    targetPort: 8000  # Container port
+  sessionAffinity: None
